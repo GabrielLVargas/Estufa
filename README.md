@@ -2,3 +2,5 @@
 #Gabriel Luppo Vargas 15.
 # ProjetoEstufa
 -sensor de umidade
+-sensor de luminosidade
+-sensor de temperatura
