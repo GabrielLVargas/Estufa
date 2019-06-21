@@ -21,11 +21,13 @@ DigitalOut bomba(p13);
 char nome[10] = "Bem Vindo";
 char nome1[25] = "";
 char nome2[25] = "";
+int s,m,n;
 
 void ReadTH(){
-    int s,m,n;
     s = d.readData();
     if (s == DHT11::OK){
+        n = sprintf(nome1, "");
+        m = sprintf(nome2, "");
         n = sprintf(nome1, "Temperatura: %i",d.readTemperature());
         m = sprintf(nome2, "Umidade: %i",d.readHumidity());    
     }
