@@ -74,8 +74,8 @@ int main() {
     pwm1.period(0.01f);
     pwm2.period(0.01f);
     
-    flipper.attach(&ReadTH, 4.0);
-    flipper.attach(&Luz, 2.0);
+    flipper.attach(&ReadTH, 2.0);
+    flipper.attach(&Luz, 5.0);
     
     umid.rise(&Bomba);
     
