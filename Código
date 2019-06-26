@@ -37,10 +37,6 @@ void ReadTH(){
     }
 }
 
-void Bomba(){
-    bomba = 1;  
-}
-
 void Luz(){
     if (ldr <= 0.5f){
         pwm1.write(0.8);
