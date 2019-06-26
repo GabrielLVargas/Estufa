@@ -8,14 +8,13 @@ Adafruit_SSD1306_Spi lcd(spi,p21,p22,p23);
 DigitalIn presenca(p24);
 Timer t;
 
-Ticker flipper;
 DHT11 d(p15);
 
 PwmOut pwm1(p25);
 PwmOut pwm2(p26);
 AnalogIn ldr(p16);
 
-InterruptIn umid(p14);
+DigitalIn umid(p14);
 DigitalOut bomba(p13);
 
 char nome[10] = "Bem Vindo";
@@ -26,45 +25,32 @@ int s,m,n;
 void ReadTH(){
     s = d.readData();
     if (s == DHT11::OK){
-        n = sprintf(nome1, "");
-        m = sprintf(nome2, "");
-        n = sprintf(nome1, "Temperatura: %i",d.readTemperature());
-        m = sprintf(nome2, "Umidade: %i",d.readHumidity());    
+        sprintf(nome1, "");
+        sprintf(nome2, "");
+        sprintf(nome1, "Temperatura: %i",d.readTemperature());
+        sprintf(nome2, "Umidade: %i",d.readHumidity());    
     }
 }
 
 void Bomba(){
-    bomba = 1;
-    wait(0.5);
+    bomba = 1;  
 }
 
 void Luz(){
-    if (ldr == 0.5f){
-        pwm1.write(0.5);
-        pwm2.write(0.5);
+    if (ldr <= 0.5f){
+        pwm1.write(0.8);
+        pwm2.write(0.8);
     }
-    else if (ldr == 0.6f){
-        pwm1.write(0.4);
-        pwm2.write(0.4);
-    }
-    else if (ldr == 0.7f){
-        pwm1.write(0.3f);
-        pwm2.write(0.3f); 
-    }
-    else if (ldr == 0.8f){
+    if (ldr == 0.8f){
         pwm1.write(0.2f);
         pwm2.write(0.2f);
-    }
-    else{
-        pwm1.write(0.8f);
-        pwm2.write(0.8f);
     }
 }
 
 int main() {
     ReadTH();
     lcd.clearDisplay();
-    lcd.setTextCursor(40,20);
+    lcd.setTextCursor(30,20);
     for(int i = 0; i < strlen(nome); i++)
         lcd.writeChar(nome[i]);
     lcd.display();
@@ -74,14 +60,13 @@ int main() {
     pwm1.period(0.01f);
     pwm2.period(0.01f);
     
-    flipper.attach(&ReadTH, 2.0);
-    flipper.attach(&Luz, 5.0);
-    
-    umid.rise(&Bomba);
+    //umid.rise(&Bomba);
     
     t.start();
     
     while(1) {
+        ReadTH();
+        Luz();
         if (presenca==1){
             t.reset();
             lcd.clearDisplay();
@@ -107,5 +92,12 @@ int main() {
             lcd.clearDisplay();
             lcd.display();
         }
+        if(umid.read() == 1){
+            bomba = 1;
+                
+        }else{
+            bomba = 0;
+        }
+        wait(0.2);
     }
 }
